@@ -1,3 +1,18 @@
+# 二开说明
+
+增加功能：
+json格式输出，
+域名过滤功能，
+规则完善
+
+```shell
+./wihscan -f 1231.txt -o 121.json -fd -r domain_rules.yaml
+```
+
+
+
+
+
 # WIHscan 介绍
 
 <a href="https://github.com/ifacker/WIHscan/releases"><img src="https://img.shields.io/github/downloads/ifacker/WIHscan/total"> 
