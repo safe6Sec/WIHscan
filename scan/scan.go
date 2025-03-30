@@ -1,6 +1,7 @@
 package scan
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -11,6 +12,7 @@ import (
 // 对单个 js 进行扫描，获取敏感信息
 func Scan(urljs string) *datatype.ScanResult {
 	urljs = strings.TrimSpace(urljs)
+	fmt.Println(urljs)
 
 	client := util.NewClient()
 
@@ -29,9 +31,17 @@ func Scan(urljs string) *datatype.ScanResult {
 		return nil
 	}
 
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			util.ErrPrint(err)
+		}
+	}(resp.Body)
 
 	body, err := io.ReadAll(resp.Body)
+
+	fmt.Println("body len:")
+	fmt.Println(len(body))
 	if err != nil && err != io.EOF {
 		util.ErrPrint(err)
 		return nil

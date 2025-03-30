@@ -1,7 +1,22 @@
 rules:
+  - id: domain
+    enabled: true
+    pattern: '\b(?:\*\.)?(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]{2,}\b'
+  - id: ip
+    enabled: true
+    pattern: \b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b
+  - id: path
+    enabled: true
+    pattern: (?:"|')((?:(?:[a-zA-Z]{1,10}://|//)[^"'/]{1,}\.[a-zA-Z]{2,}[^"']{0,})|(?:(?:(?:/|\.\./|\./)?[^"'><,;|*()(%%$^/\\\[\]][^"'><,;|()]{1,}\.[a-zA-Z]{1,4})|(?:(?:/|\.\./|\./)?[^"'><,;|*()(%%$^/\\\[\]][^"'><,;|()]{1,}/[^"'><,;|()]{1,}(?:\.[a-zA-Z]{1,4}|action)?)))(?:[\?|#][^"|']{0,})?(?:"|')
+  - id: domain_url
+    enabled: true
+    pattern: (\b(?![\w]{0,10}?https?://)(([-A-Za-z0-9]{1,20})://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]))
+  - id: all_url
+    enabled: true
+    pattern: (https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;\u4E00-\u9FFF]+[-A-Za-z0-9+&@#/%=~_|])
   # 邮箱
   - id: email
-    enabled: false
+    enabled: true
     pattern: \b[A-Za-z0-9._\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,61}\b
   # 二代身份证
   - id: id_card
@@ -9,7 +24,7 @@ rules:
     pattern: \b([1-9]\d{5}(19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx])\b
   # 手机号
   - id: phone
-    enabled: false
+    enabled: true
     pattern: \b1[3-9]\d{9}\b
   # jwt token (不要修改ID)
   - id: jwt_token
@@ -23,6 +38,69 @@ rules:
   - id: QCloud_AK_ID
     enabled: true
     pattern: \bAKID[A-Za-z\d]{13,40}\b
+  # 京东云 AccessKey ID (不要修改ID)
+  - id: JDCloud_AK_ID
+    enabled: true
+    pattern: \bJDC_[0-9A-Z]{25,40}\b
+  # 亚马逊 AccessKey ID
+  - id: AWS_AK_ID
+    enabled: true
+    pattern: '["''](?:A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}["'']'
+  # 火山引擎 AccessKey ID
+  - id: VolcanoEngine_AK_ID
+    enabled: true
+    pattern: \b(?:AKLT|AKTP)[a-zA-Z0-9]{35,50}\b
+  # 金山云 AccessKey ID
+  - id: Kingsoft_AK_ID
+    enabled: true
+    pattern: \bAKLT[a-zA-Z0-9-_]{16,28}\b
+  # 谷歌云 AccessKey ID
+  - id: GCP_AK_ID
+    enabled: true
+    pattern: \bAIza[0-9A-Za-z_\-]{35}\b
+  # 提取 SecretKey, 内置规则
+  - id: secret_key
+    enabled: true
+  # Bearer Token
+  - id: bearer_token
+    enabled: true
+    pattern: \b[Bb]earer\s+[a-zA-Z0-9\-=._+/\\]{20,500}\b
+  # Basic Token
+  - id: basic_token
+    enabled: true
+    pattern: \b[Bb]asic\s+[A-Za-z0-9+/]{18,}={0,2}\b
+  # Auth Token
+  - id: auth_token
+    enabled: true
+    pattern: '["''\[]*[Aa]uthorization["''\]]*\s*[:=]\s*[''"]?\b(?:[Tt]oken\s+)?[a-zA-Z0-9\-_+/]{20,500}[''"]?'
+  # PRIVATE KEY
+  - id: private_key
+    enabled: true
+    pattern: -----\s*?BEGIN[ A-Z0-9_-]*?PRIVATE KEY\s*?-----[a-zA-Z0-9\/\n\r=+]*-----\s*?END[ A-Z0-9_-]*? PRIVATE KEY\s*?-----
+  #Gitlab V2 Token
+  - id: gitlab_v2_token
+    enabled: true
+    pattern: \b(glpat-[a-zA-Z0-9\-=_]{20,22})\b
+  #Github Token
+  - id: github_token
+    enabled: true
+    pattern: \b((?:ghp|gho|ghu|ghs|ghr|github_pat)_[a-zA-Z0-9_]{36,255})\b
+  #腾讯云 API网关 APPKEY
+  - id: qcloud_api_gateway_appkey
+    enabled: true
+    pattern: \bAPID[a-zA-Z0-9]{32,42}\b
+  #微信 公众号/小程序 APPID
+  - id: wechat_appid
+    enabled: true
+    pattern: '["''](wx[a-z0-9]{15,18})["'']'
+  #企业微信 corpid
+  - id: wechat_corpid
+    enabled: true
+    pattern: '["''](ww[a-z0-9]{15,18})["'']'
+  #微信公众号
+  - id: wechat_id
+    enabled: true
+    pattern: '["''](gh_[a-z0-9]{11,13})["'']'
   # 密码
   - id: password
     enabled: true
@@ -58,10 +136,32 @@ rules:
   - id: app_key
     enabled: true
     pattern: \b(?:VUE|APP|REACT)_[A-Z_0-9]{1,15}_(?:KEY|PASS|PASSWORD|TOKEN|APIKEY)['"]*[:=]"(?:[A-Za-z0-9_\-]{15,50}|[a-z0-9/+]{50,100}==?)"
+  - id: swagger_ui
+    enabled: true
+    pattern: ((swagger-ui.html)|(\"swagger\":)|(Swagger UI)|(swaggerUi)|(swaggerVersion))
+  - id: Druid
+    enabled: true
+    pattern: (Druid Stat Index)
+  - id: Debug_Logic_Parameters
+    enabled: true
+    pattern: ((access=)|(adm=)|(admin=)|(alter=)|(cfg=)|(clone=)|(config=)|(create=)|(dbg=)|(debug=)|(delete=)|(disable=)|(edit=)|(enable=)|(exec=)|(execute=)|(grant=)|(load=)|(make=)|(modify=)|(rename=)|(reset=)|(root=)|(shell=)|(test=)|(toggl=))
+  - id: JDBC_Connection
+    enabled: true
+    pattern: (jdbc:[a-z:]+://[a-z0-9\.\-_:;=/@?,&]+)
+  - id: Sensitive_Field
+    enabled: false
+    pattern: (((\[)?('|")?([\.\w]{0,10})(key|secret|token|config|auth|access|admin|ticket)([\.\w]{0,10})('|")?(\])?( |)(:|=|!=|[\)]{0,1}\.val\()( |)('|")([^'"]+?)('|")(|,|\)))|((|\\)('|")([^'"]+?)(|\\)('|")(|\\)(|'|")( |)(:|[=]{1,3}|![=]{1,2})( |)(|[\.\w]{1,10})(key|secret|token|config|auth|access|admin|ticket)(|[\.\w]{1,10})(|\\)(|'|")))
+  - id: Source_Map
+    enabled: true
+    pattern: (\.js\.map)
+  - id: 302_Location
+    enabled: true
+    pattern: 'Location: (.*?)\n'
+
 
 # 排除规则， 支持字段 id, content, target , source 逻辑为 and ，如果是正则匹配，需要使用 regex: 开头
 exclude_rules:
-    # 排除站点 https://cc.163.com 中 类型为 secret_key 的内容
+  # 排除站点 https://cc.163.com 中 类型为 secret_key 的内容
   - name: "不收集 cc.163.com 的 secret_key" # 排除规则名称，无实际意义
     id: secret_key
     target: regex:cc\.163\.com

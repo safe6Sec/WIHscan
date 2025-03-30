@@ -22,7 +22,7 @@ func init() {
 	// 区分大小写
 	flagset.CaseSensitive = false
 
-	flagset.CreateGroup("option", "必选参数（这里 -u、-f、-fj 三选其一）",
+	flagset.CreateGroup("option", "必选参数（这里 -t、-f、-fj 三选其一）",
 		flagset.StringVarP(&option.Url, "url", "u", "", "需要扫描的 url"),
 		flagset.StringVarP(&option.FilePath, "filePath", "f", "", "要扫描的文件路径"),
 		flagset.StringVarP(&option.JsonFilePath, "jsonPath", "fj", "", "要扫描的json文件的路径"),
@@ -30,11 +30,13 @@ func init() {
 
 	flagset.CreateGroup("other", "可选参数",
 		flagset.StringVarP(&option.OutputFilePath, "output", "o", "result.txt", "输出路径，默认当前目录的 result.txt 文件中"),
-		flagset.IntVarP(&option.Thread, "thread", "t", 200, "设置并发量"),
+		flagset.IntVarP(&option.Thread, "thread", "t", 5, "设置并发量"),
 		flagset.StringVarP(&option.Proxy, "proxy", "p", "", "代理地址，如：-p http://localhost:8080 或 -p socks5://localhost:1080"),
 		flagset.IntVarP(&option.TimeOut, "timeout", "", 60, "设置超时时长，单位：秒"),
-		flagset.StringVarP(&option.RuleConfigPath, "rule", "", "config/rules.yaml", "指定规则配置文件路径"),
+		flagset.StringVarP(&option.RuleConfigPath, "rule", "r", "config/rules.yaml", "指定规则配置文件路径"),
 		flagset.BoolVarP(&option.Debug, "debug", "", false, "debug 模式，开启错误提示（方便开发使用）"),
+		flagset.BoolVarP(&option.OutputJson, "OutputJson", "oj", true, "输出json格式"),
+		flagset.BoolVarP(&option.FilterDomain, "FilterDomain", "fd", false, "只筛选域名"),
 	)
 	flagset.Parse()
 }
@@ -52,6 +54,10 @@ func Options() *datatype.Option {
 
 	global.TimeOut = time.Duration(option.TimeOut) * time.Second
 	global.RulePath = option.RuleConfigPath
+
+	if option.FilterDomain {
+		global.RulePath = "config/domain_rules.yaml"
+	}
 
 	return option
 }

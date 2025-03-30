@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/json"
 	"fmt"
 	"wihscan/dataType"
 
@@ -39,4 +40,17 @@ func FormatOutputWrite(resultScan *dataType.ScanResult, writePath string) {
 	}
 
 	WriteFile(writePath, format+"\n")
+}
+
+func FormatOutputWriteJson(resultScan *dataType.ScanResult, writePath string) {
+
+	// 构造JSON数据结构
+	output := map[string]interface{}{
+		"target":  resultScan.UrlJs,
+		"records": resultScan.Info,
+	}
+
+	// 序列化JSON
+	jsonData, _ := json.Marshal(output)
+	WriteFile(writePath, string(jsonData)+"\n")
 }

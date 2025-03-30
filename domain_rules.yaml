@@ -1,0 +1,23 @@
+rules:
+  - id: domain
+    enabled: true
+    pattern: '\b(?:\*\.)?(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]{2,}\b'
+
+
+# 排除规则， 支持字段 id, content, target , source 逻辑为 and ，如果是正则匹配，需要使用 regex: 开头
+exclude_rules:
+  # 排除站点 https://cc.163.com 中 类型为 secret_key 的内容
+  - name: "不收集 cc.163.com 的 secret_key" # 排除规则名称，无实际意义
+    id: secret_key
+    target: regex:cc\.163\.com
+    enabled: true
+
+  - name: "不收集 open.work.weixin.qq.com 的 bearer_token"
+    id: bearer_token
+    target: https://open.work.weixin.qq.com
+    content: regex:Bearer\s+
+    enabled: true
+
+  - name: "过滤来自首页的内容"
+    source_tag: page
+    enabled: false

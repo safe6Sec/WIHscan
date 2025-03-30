@@ -18,6 +18,9 @@ func rule(body string) map[string]string {
 		return nil
 	}
 
+	fmt.Println("规则数量")
+	fmt.Println(len(global.RuloWIH.Rules))
+
 	// 处理 rule
 	for _, rule := range global.RuloWIH.Rules {
 		if !rule.Enabled {
@@ -60,8 +63,8 @@ func RuleLoad() {
 	for _, rule := range global.RuloWIH.Rules {
 		if rule.Pattern == "" {
 			color.Warnf("%s 此规则跳过！\n", rule.Id)
+		} else {
+			color.Infof("%s 加载规则！\n", rule.Id)
 		}
 	}
-	fmt.Println()
-
 }

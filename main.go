@@ -2,6 +2,7 @@ package main
 
 import (
 	"sync"
+	datatype "wihscan/dataType"
 	"wihscan/factory"
 	"wihscan/global"
 	"wihscan/options"
@@ -39,15 +40,19 @@ func main() {
 		wg.Add(1)
 		// 在 goroutine 启动之前获取信号量
 		sem <- struct{}{}
-		go thread(url, wg)
+		go thread(url, option, wg)
 	}
 	wg.Wait()
 }
 
-func thread(url string, wg *sync.WaitGroup) {
+func thread(url string, option *datatype.Option, wg *sync.WaitGroup) {
 	resultScan := scan.Scan(url)
 	util.FormatOutput(resultScan)
-	util.FormatOutputWrite(resultScan, writePath)
+	if option.OutputJson {
+		util.FormatOutputWriteJson(resultScan, writePath)
+	} else {
+		util.FormatOutputWrite(resultScan, writePath)
+	}
 	<-sem
 	wg.Done()
 }
